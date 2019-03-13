@@ -1,0 +1,114 @@
+#include <iostream>
+
+using namespace std;
+class node
+{   public:
+    int data;
+    node * rt;
+    node * lt;
+    node( int value)
+    {
+        data=value;
+        rt=NULL;
+        lt=NULL;
+    }
+    
+};
+
+class tree
+{
+    public:
+    node *root;
+    tree()
+    {
+        root=NULL;
+    }
+    void insert(int value){
+        insertHelper(root, value);
+    }
+    void insertHelper(node * curr, int value){
+        //if current is null , insert there
+        if(curr==NULL)
+        { curr=new node(value);
+    
+        
+            if(root==NULL)
+            root=curr;
+        }
+        //else compare the curr data with value
+        else if(value<curr->data){
+        //if value<curr dta
+        //move left and call insert
+        if(curr->lt==NULL)
+        curr->lt=new node(value);
+        else
+        insertHelper(curr->lt, value);
+        
+        }
+        else{
+        //else move right and call insert
+        if(curr->rt==NULL)
+        curr->rt= new node(value);
+        else
+        insertHelper(curr->rt, value);
+        
+        }
+        
+        
+    }
+    
+    
+    
+    void display(){
+        display2(root);
+    }
+    void display2(node *curr){
+        
+        //base condition
+        if(curr==NULL)
+        return;
+        //display left
+        display2(curr->lt);
+        //display current
+        cout<<curr->data<<":";
+        //display right
+        display2(curr->rt);
+    }
+   node * search( node * curr, int val)
+    {   //if value found or reached end
+        if(curr==NULL|| curr->data==val){
+        return curr;
+        }
+        else if(val>curr->data)
+        return search(curr->lt,val);
+        else
+        return search(curr->rt,val);
+        
+        
+        
+    }
+   // height();
+    //delete();
+    
+};
+
+
+int main()
+{
+   tree t;
+   t.insert(3);
+   t.insert(4);
+   t.insert(2);
+    t.insert(6);
+   t.insert(5);
+   t.insert(1);
+   t.display();
+   if(t.search(t.root,1)!=NULL)
+   cout<<"found";
+   else
+   cout<<"not found";
+   
+
+    return 0;
+}
+
