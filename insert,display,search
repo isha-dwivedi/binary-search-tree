@@ -4,7 +4,7 @@ using namespace std;
 class node
 {   public:
     int data;
-    node * rt;
+    node * rt; //setting up the right and left of the parent
     node * lt;
     node( int value)
     {
@@ -18,7 +18,7 @@ class node
 class tree
 {
     public:
-    node *root;
+    node *root; //parent node
     tree()
     {
         root=NULL;
@@ -28,7 +28,7 @@ class tree
     }
     void insertHelper(node * curr, int value){
         //if current is null , insert there
-        if(curr==NULL)
+        if(curr==NULL)  //for inserting at first node
         { curr=new node(value);
     
         
@@ -36,13 +36,14 @@ class tree
             root=curr;
         }
         //else compare the curr data with value
-        else if(value<curr->data){
         //if value<curr dta
-        //move left and call insert
+        else if(value<curr->data){
+        
+         // call insert and add value on left if its empty
         if(curr->lt==NULL)
         curr->lt=new node(value);
         else
-        insertHelper(curr->lt, value);
+        insertHelper(curr->lt, value);  //else keep moving left
         
         }
         else{
@@ -50,7 +51,7 @@ class tree
         if(curr->rt==NULL)
         curr->rt= new node(value);
         else
-        insertHelper(curr->rt, value);
+        insertHelper(curr->rt, value); //else keep moving right
         
         }
         
@@ -59,8 +60,8 @@ class tree
     
     
     
-    void display(){
-        display2(root);
+    void display(){ 
+        display2(root); //displaying root
     }
     void display2(node *curr){
         
@@ -68,7 +69,7 @@ class tree
         if(curr==NULL)
         return;
         //display left
-        display2(curr->lt);
+        display2(curr->lt); 
         //display current
         cout<<curr->data<<":";
         //display right
@@ -79,16 +80,17 @@ class tree
         if(curr==NULL|| curr->data==val){
         return curr;
         }
-        else if(val>curr->data)
+        //if value less than current data, move left
+        else if(val<curr->data)
         return search(curr->lt,val);
+        //if data not found move right and search
         else
         return search(curr->rt,val);
         
         
         
     }
-   // height();
-    //delete();
+  
     
 };
 
@@ -103,7 +105,7 @@ int main()
    t.insert(5);
    t.insert(1);
    t.display();
-   if(t.search(t.root,1)!=NULL)
+   if(t.search(t.root,9)!=NULL)
    cout<<"found";
    else
    cout<<"not found";
