@@ -1,0 +1,318 @@
+#include <iostream>
+
+using namespace std;
+class node
+{   public:
+	int data;
+	node * rt; //setting up the right and left of the parent
+	node * lt;
+	node* par;
+	node( int value)   
+	{
+    	data=value;
+    	rt=NULL;
+    	lt=NULL;
+    	par=NULL;
+	}
+    
+};
+
+class tree
+{
+	public:
+	node *root; //parent node
+	int cnt;
+	tree()
+	{
+    	root=NULL;
+    	cnt=0;
+	}
+	void insert(int value){
+    	insertHelper(root, value);
+     	cnt++;
+    	cout<<cnt<<endl;
+	}
+	void insertHelper(node * curr, int value){
+    	//if current is null , insert there
+    	if(curr==NULL)  //for inserting at first node
+    	{ curr=new node(value);
+    
+   	 
+        	if(root==NULL)
+        	root=curr;
+    	}
+    	//else compare the curr data with value
+    	//if value<curr dta
+    	else if(value<curr->data){
+   	 
+     	// call insert and add value on left if its empty
+    	if(curr->lt==NULL)
+    	{curr->lt=new node(value);
+    	curr->lt->par=curr;}
+    	else
+    	insertHelper(curr->lt, value);  //else keep moving left
+   	 
+    	}
+    	else{
+    	//else move right and call insert
+    	if(curr->rt==NULL)
+    	{curr->rt= new node(value);
+     	curr->rt->par=curr;}
+    	else
+    	insertHelper(curr->rt, value); //else keep moving right
+  	 
+    	}
+   	 
+   	 
+	}
+    
+    
+    
+	void display(){
+    	display2(root); //displaying root
+	}
+	void display2(node *curr){
+   	 
+    	//base condition
+    	if(curr==NULL)
+    	return;
+    	//display left
+    	display2(curr->lt);
+    	//display current
+    	cout<<curr->data<<":";
+    	//display right
+    	display2(curr->rt);
+	}
+   node * search( node * curr, int val)
+	{   //if value found or reached end
+    	if(curr==NULL|| curr->data==val){
+    	return curr;
+    	}
+    	//if value less than current data, move left
+    	else if(val<curr->data)
+    	return search(curr->lt,val);
+    	//if data not found move right and search
+    	else
+    	return search(curr->rt,val);
+   	 
+   	 
+   	 
+	}
+	//findmin of right
+	node * find_min(node *curr)
+	{while(curr->lt!=NULL)
+    {
+   	 find_min(curr->lt);
+   	 
+   	 
+   	 return 0;}
+   	 cout<<"min is"<<curr->data<<endl;
+   	 return curr;
+   	 
+	}
+ 
+	//find max of left
+	node * find_max(node *curr)
+	{
+   	while(curr->rt!=NULL)
+    {
+   	 find_max(curr->rt);
+   	 return 0;}
+   	 cout<<"max is"<<curr->data<<endl;
+   	 return curr;
+
+   	 
+	}
+    
+ 
+  //replace with parent
+void replace(node* curr,node * rep)
+{   	 
+   	 if(curr->par->lt==curr)
+   	 {
+   	 curr->par->lt=rep;
+   	 rep->par=curr->par;
+   	 
+    
+   	 }
+   	 if(curr->par->rt==curr)
+   	 {
+   	 curr->par->rt=rep;
+   	 rep->par=curr->par;
+    
+   	 }
+  }
+ 
+  //delete
+  void del(int val){
+       //search
+      node * curr=search(root,val);
+      node * temp;
+      //cout<<curr->data<<endl;
+      if(root==NULL)
+      return ;
+      
+      
+ 	 //for zero child
+ 	 if(curr->lt==NULL && curr->rt==NULL)
+ 	 { temp=NULL;
+ 	  //replace with null
+ 	  if(curr->par->lt==curr){
+ 	  curr->par->lt=temp;
+ 	 
+ 	  }
+ 	    else
+ 	     
+ 	 { curr->par->rt=temp;
+ 	 
+ 	 }
+ 	 }
+ 	
+ 	    
+ 	 //for 1 child
+ 	    //search
+ 	   else if(curr->lt==NULL || curr->rt==NULL)
+ 	    {   //check if left or right child
+ 	            
+ 	           if(curr->rt==NULL && curr->par->lt==curr)
+ 	           {
+ 	           temp=curr->lt;
+ 	           curr->par->lt=temp;
+ 	        temp->par=curr->par;
+ 	           
+ 	           }
+ 	           else
+ 	           {
+ 	               temp=curr->rt;
+ 	           curr->par->rt=temp;
+ 	        temp->par=curr->par;
+ 	               
+ 	           }
+ 	           
+ 	            
+ 	    }
+ 	    
+ 	       
+ 	      
+ 	       
+ 	 //for 2 child
+ 	else
+  	{    int a;
+      	if(curr->par->rt==curr )//if current is right node
+      	{
+          	temp=find_min(curr->rt );
+   	 cout<<"{"<<temp->data<<"}"<<endl;
+   	 //swapping the value of temp and the node to be deleted
+   	 a=temp->data; 
+   	 temp->data=curr->data;
+   	 curr->data=a;
+    /*as temp's left is null, but right contains some value that
+    needs to be linked to the parent node*/
+    temp->par->rt=temp->rt; 
+   	 
+   	 delete temp;
+   	 
+      	}
+      if(curr->par->lt==curr ) //if current is left node
+      	{
+          	temp=find_min(curr->rt);
+    cout<<"{"<<temp->data<<"}"<<endl;
+   	 a=temp->data;
+   	 temp->data=curr->data;
+   	 curr->data=a;
+   	 temp->par->rt=temp->rt;
+   	 delete temp;
+      	}
+     
+  	}
+
+ 	       
+  }
+  
+  //height
+  int height(node * curr)
+  {
+     if(curr==NULL)
+     return 0;
+     
+     else
+     {
+     int lth=height(curr->lt); //taking the complete lenght of left side
+     int rth=height(curr->rt); //taking the complete lenght of right side
+     if(lth>rth)
+     return (lth+1);
+     else 
+     return(rth+1);
+  }
+  }
+    
+    
+//range
+void range(node *curr, int a1, int a2)  
+{  int count=0;
+    // base case 
+    if ( curr==NULL )  
+        return;  
+      
+   //check if a1 is smaller than root, them move left
+    if ( a1 < curr->data )  
+        range(curr->lt, a1, a2);  
+      /* if root's data lies in range,  
+    then prints root's data */
+    if ( a1 <= curr->data && a2 >= curr->data )  
+        {cout<<curr->data<<" ";
+        count++;
+        }
+        
+     
+    // check if a1 is greater than root, them move right
+    if ( a2 > curr->data )  
+        range(curr->rt, a1, a2);  
+        
+        return count;
+        
+}  
+};
+
+
+int main()
+{
+   tree t;
+   t.insert(4);
+   t.insert(3);
+   t.insert(2);
+	t.insert(6);
+   t.insert(5);
+   t.insert(1);
+	t.insert(7);
+		t.insert(11);
+		t.insert(14);
+		t.insert(9);
+		t.insert(8);
+		t.insert(10);
+   t.display();
+   if(t.search(t.root,5)!=NULL)
+   cout<<"found";
+   else
+   cout<<"not found";
+   cout<<endl;
+   t.find_min(t.root->rt);
+   t.find_max(t.root->lt);
+   //t.replace(t.root->lt,t.root->rt);
+t.del(9);
+t.display();
+cout<<endl;
+cout<<"the max height of the tree is:"<<t.height(t.root)<<endl;
+t.range(t.root,5,7);
+
+
+   
+
+	return 0;
+}
+
+
+
+
+
+
